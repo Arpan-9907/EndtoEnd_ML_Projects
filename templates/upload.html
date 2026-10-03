@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Credit Risk Predictor - Batch CSV Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a4ebd 100%);
+            color: #ffffff;
+            padding: 2.5rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+        }
+        .upload-card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            background: #ffffff;
+        }
+        .dropzone-area {
+            border: 2px dashed #b8c4d9;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .dropzone-area:hover, .dropzone-area.dragover {
+            border-color: #0d6efd;
+            background-color: #eef4ff;
+        }
+        .stat-card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            background: #ffffff;
+        }
+        .preview-table-wrapper {
+            max-height: 480px;
+            overflow-y: auto;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-check fs-4 me-2"></i>
+                Home Credit Risk AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="/"><i class="bi bi-person-fill me-1"></i> Single Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-semibold" href="/upload"><i class="bi bi-file-earmark-arrow-up-fill me-1"></i> Batch CSV Upload</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Banner -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-6 fw-bold mb-2">Batch CSV Loan Risk Prediction</h1>
+            <p class="lead mb-0 text-white-50">Upload a dataset of applicants (CSV) to run automated high-throughput risk predictions.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+
+                <!-- Alert Messages -->
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                {% if train_message %}
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ train_message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                <!-- Batch Upload Card -->
+                <div class="card upload-card p-4 p-md-5 mb-4">
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload Application CSV File</h4>
+                        <p class="text-muted small">Select or drag &amp; drop your application dataset (e.g., <code>application_test.csv</code>).</p>
+                    </div>
+
+                    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+                        <div class="dropzone-area mb-3" onclick="document.getElementById('csvFileInput').click()">
+                            <i class="bi bi-filetype-csv text-primary" style="font-size: 3rem;"></i>
+                            <h5 class="fw-semibold mt-2 mb-1" id="fileLabelText">Choose a CSV file or drag it here</h5>
+                            <p class="text-muted small mb-0">Only .csv files supported</p>
+                            <input type="file" id="csvFileInput" name="file" accept=".csv" class="d-none" required onchange="handleFileSelect(this)">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between align-items-center">
+                            <span class="text-muted small" id="selectedFileInfo">No file chosen yet</span>
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-gear-fill me-1"></i> Run Batch Prediction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Batch Results Section -->
+                {% if success %}
+                <div class="card upload-card p-4 p-md-5 mb-4 border-start border-success border-5">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
+                        <div>
+                            <h4 class="fw-bold text-success mb-1">
+                                <i class="bi bi-check2-circle me-2"></i>Batch Prediction Completed!
+                            </h4>
+                            <p class="text-muted small mb-0">Processed file: <strong>{{ filename }}</strong></p>
+                        </div>
+                        <a href="/download" class="btn btn-success btn-lg shadow-sm">
+                            <i class="bi bi-download me-1"></i> Download Prediction CSV
+                        </a>
+                    </div>
+
+                    <!-- Prediction Statistics Summary -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card stat-card p-3 border-start border-primary border-4 bg-light">
+                                <div class="text-muted small text-uppercase fw-semibold">Total Records</div>
+                                <div class="display-6 fw-bold text-dark">{{ total_records }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card stat-card p-3 border-start border-danger border-4 bg-light">
+                                <div class="text-muted small text-uppercase fw-semibold">High Risk / Bad Credit</div>
+                                <div class="display-6 fw-bold text-danger">{{ counts.get('bad', 0) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card stat-card p-3 border-start border-success border-4 bg-light">
+                                <div class="text-muted small text-uppercase fw-semibold">Low Risk / Good Credit</div>
+                                <div class="display-6 fw-bold text-success">{{ counts.get('good', 0) }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Table -->
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-table me-2 text-primary"></i>Preview (First 10 Records)</h5>
+                            <span class="badge bg-secondary">Top Columns Displayed</span>
+                        </div>
+                        <div class="table-responsive preview-table-wrapper border shadow-sm">
+                            <table class="table table-hover table-striped align-middle mb-0 small">
+                                <thead class="table-dark sticky-top">
+                                    <tr>
+                                        {% for col in preview_cols %}
+                                        <th scope="col" class="{% if col == 'TARGET' %}bg-primary text-white{% endif %}">
+                                            {{ col }}
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in preview_records %}
+                                    <tr>
+                                        {% for col in preview_cols %}
+                                        <td class="{% if col == 'TARGET' %}fw-bold{% endif %}">
+                                            {% if col == 'TARGET' %}
+                                                {% if row[col] == 'good' %}
+                                                    <span class="badge bg-success text-uppercase">Good</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger text-uppercase">Bad</span>
+                                                {% endif %}
+                                            {% else %}
+                                                {{ row[col] }}
+                                            {% endif %}
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-muted border-top bg-white mt-auto">
+        <div class="container small">
+            Home Credit Default Risk Prediction System &copy; 2026. Built with Flask &amp; Scikit-Learn.
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS & Interactive Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('fileLabelText').innerText = file.name;
+                document.getElementById('selectedFileInfo').innerHTML = 
+                    `<i class="bi bi-file-check-fill text-success me-1"></i> Selected: <strong>${file.name}</strong> (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+            }
+        }
+
+        const dropzone = document.querySelector('.dropzone-area');
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('dragover');
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('dragover');
+                }, false);
+            });
+            dropzone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    const input = document.getElementById('csvFileInput');
+                    input.files = files;
+                    handleFileSelect(input);
+                }
+            }, false);
+        }
+    </script>
+</body>
+</html>

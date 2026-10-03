@@ -1,0 +1,98 @@
+# ==========================================
+# Python & Virtual Environments
+# ==========================================
+myenv/
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dll
+
+# Distribution / packaging
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==========================================
+# Large Datasets & Raw Data (>100MB)
+# ==========================================
+# Raw dataset files must not be pushed to GitHub due to file size limits
+data/*
+!data/.gitkeep
+notebooks/data/
+*.csv
+*.tsv
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.parquet
+*.feather
+*.h5
+
+# ==========================================
+# Artifacts, Preprocessed Data & Models
+# ==========================================
+# Ignore large preprocessed numpy arrays, transformed CSVs, and model binaries
+artifacts/*
+!artifacts/.gitkeep
+!artifacts/top_features.json
+
+# Predictions and temporary uploads
+artifacts/predictions/
+artifacts/uploads/
+
+# ==========================================
+# Logs & Monitoring
+# ==========================================
+logs/*
+!logs/.gitkeep
+*.log
+
+# ==========================================
+# Jupyter Notebook Checkpoints
+# ==========================================
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ==========================================
+# Editors & Operating System Files
+# ==========================================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Testing & Coverage
+# ==========================================
+.pytest_cache/
+.coverage
+htmlcov/

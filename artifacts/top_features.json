@@ -1,0 +1,26 @@
+{
+    "top_features": [
+        "EXT_SOURCE_3",
+        "EXT_SOURCE_2",
+        "EXT_SOURCE_1",
+        "DAYS_BIRTH",
+        "AMT_GOODS_PRICE",
+        "CODE_GENDER_M",
+        "DAYS_EMPLOYED",
+        "AMT_CREDIT",
+        "AMT_ANNUITY",
+        "NAME_EDUCATION_TYPE_Higher education"
+    ],
+    "feature_means": {
+        "EXT_SOURCE_3": -0.09497545698164944,
+        "EXT_SOURCE_2": -0.1892234323464306,
+        "EXT_SOURCE_1": -0.0018251164126771445,
+        "DAYS_BIRTH": -0.03908021472622522,
+        "AMT_GOODS_PRICE": 0.20123533487687664,
+        "CODE_GENDER_M": 0.34233033072095215,
+        "DAYS_EMPLOYED": 26.296099510388473,
+        "AMT_CREDIT": 0.15711222208324205,
+        "AMT_ANNUITY": 0.12216707335107956,
+        "NAME_EDUCATION_TYPE_Higher education": 0.24465638748101107
+    }
+}
