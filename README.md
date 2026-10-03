@@ -26,7 +26,7 @@ An end-to-end Machine Learning system and production-ready Flask web application
 
 ## 💼 Business Problem
 
-Many individuals struggle to get loans due to insufficient or non-existent credit histories. Home Credit strives to broaden financial inclusion for the unbanked population by providing a safe lending experience. 
+Many individuals struggle to get loans due to insufficient or non-existent credit histories. Home Credit strives to broaden financial inclusion for the unbanked population by providing a safe lending experience.
 
 This project leverages historical application and behavioral data to predict whether a loan applicant will have repayment difficulties (`TARGET = 1`) or successfully repay their loan (`TARGET = 0`). By identifying default risk accurately, lenders can approve viable borrowers safely while mitigating default losses.
 
@@ -136,25 +136,30 @@ Home_Credit_Project/
 ## ⚙️ Installation and Setup
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/<your-username>/Home_Credit_Project.git
 cd Home_Credit_Project
 ```
 
 ### 2. Create and Activate Virtual Environment
+
 **On Windows (PowerShell):**
+
 ```powershell
 python -m venv myenv
 .\myenv\Scripts\activate
 ```
 
 **On Linux / macOS:**
+
 ```bash
 python3 -m venv myenv
 source myenv/bin/activate
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -164,17 +169,23 @@ pip install -r requirements.txt
 ## 🚀 Running the Pipelines
 
 ### Full End-to-End Training Pipeline
+
 To run the automated ingestion, transformation, model evaluation/tuning, and feature extraction:
+
 ```bash
 python src/pipeline/train_pipeline.py
 ```
+
 Or run the dedicated test runner:
+
 ```bash
 python tests/test_train_pipeline.py
 ```
 
 ### Batch Prediction Test
+
 To verify inference against test datasets:
+
 ```bash
 python tests/test_predict_pipeline.py
 ```
@@ -184,22 +195,25 @@ python tests/test_predict_pipeline.py
 ## 🌐 Running the Web Application
 
 Launch the Flask application:
+
 ```bash
 python app.py
 ```
 
 Once running, navigate to:
+
 ```
 http://localhost:5000
 ```
 
 ### Web Application Endpoints:
-| Route | Method | Description |
-|---|---|---|
-| `/` or `/predict` | `GET`, `POST` | Single applicant risk scoring form with instant classification |
-| `/upload` | `GET`, `POST` | Batch CSV upload interface with progress summary and table preview |
-| `/download` | `GET` | Export processed batch prediction results as a `.csv` file |
-| `/train` | `POST` | Trigger pipeline retraining directly from the web interface |
+
+| Route             | Method        | Description                                                        |
+| ----------------- | ------------- | ------------------------------------------------------------------ |
+| `/` or `/predict` | `GET`, `POST` | Single applicant risk scoring form with instant classification     |
+| `/upload`         | `GET`, `POST` | Batch CSV upload interface with progress summary and table preview |
+| `/download`       | `GET`         | Export processed batch prediction results as a `.csv` file         |
+| `/train`          | `POST`        | Trigger pipeline retraining directly from the web interface        |
 
 ---
 
